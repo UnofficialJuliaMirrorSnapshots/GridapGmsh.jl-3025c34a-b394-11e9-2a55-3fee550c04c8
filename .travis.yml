@@ -1,0 +1,20 @@
+# Documentation: http://docs.travis-ci.com/user/languages/julia/
+dist: trusty
+language: julia
+os:
+  - linux
+julia:
+  - 1.1
+matrix:
+  fast_finish: true
+before_script:
+  - curl -OL http://gmsh.info/bin/Linux/gmsh-4.4.1-Linux64-sdk.tgz
+  - tar xfv gmsh-4.4.1-Linux64-sdk.tgz
+  - GMSHROOT=`pwd`/gmsh-4.4.1-Linux64-sdk
+  - export PATH=$PATH:$GMSHROOT/bin
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+after_success:
+  - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
